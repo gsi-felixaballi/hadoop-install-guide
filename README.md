@@ -101,7 +101,7 @@ services:
 cd /path/to/file/docker-compose.yml
 docker-compose up
 
-``
+```
 
 
 ### *Installing local tools*
@@ -129,7 +129,8 @@ export HDFS_SECONDARYNAMENODE_USER="root"
 export YARN_RESOURCEMANAGER_USER="root"
 export YARN_NODEMANAGER_USER="root"
 
-export PATH=$PATH:$JAVA_HOME:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export PATH=$PATH:$JAVA_HOME:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
 
 service ssh start && start-all.sh
 
@@ -160,7 +161,6 @@ docker run -it -h master --name hdp-master --cpus=1 \
 --add-host="slave-1:192.168.0.2" \
 --add-host="slave-2:192.168.0.3" \
 debian:hadoop3
-# bash "sh /root/start-cluster.sh"
 ```
 
 ### *Slave (1) Node*
@@ -172,7 +172,6 @@ docker run -it -h slave-1 --name hdp-slave-1 --cpus=1 \
 --add-host="master:192.168.0.1" \
 --add-host="slave-2:192.168.0.3" \
 debian:hadoop3
-# --entrypoint="sh /start-slave.sh" \
 ```
 
 ### *Slave (2) Node*
@@ -184,7 +183,18 @@ docker run -it -h slave-2 --name hdp-slave-2 --cpus=1 \
 --add-host="master:192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
 debian:hadoop3
-# --entrypoint="sh /start-slave.sh" \
+```
+
+### *Slave (3) Node*
+
+```bash
+docker run -it -h slave-3 --name hdp-slave-3 --cpus=1 \
+--memory="1024MB" --memory-swap="2048MB" \
+--workdir="/home/hadoop/" --net=hadoop-cluster --ip="192.168.0.4" \
+--add-host="master:192.168.0.1" \
+--add-host="slave-1:192.168.0.2" \
+--add-host="slave-2:192.168.0.3" \
+debian:hadoop3
 ```
 
 ---
@@ -206,6 +216,7 @@ master
 ```bash
 slave-1
 slave-2
+slave-3
 ```
 
 ---
@@ -217,6 +228,7 @@ slave-2
 ```bash
 slave-1
 slave-2
+slave-3
 ```
 
 ---
@@ -350,6 +362,51 @@ Add these properties for HDFS *namenode/datanode*:
 </configuration>
 
 ```
+
+## Configure passwordless SSH (*Master / Slaves)
+
+```bash
+
+# Replicate in all instances
+sudo apt-get install openssh-server openssh-client
+
+# Only Master
+ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ssh localhost
+
+# Copy from Master to Slaves
+ssh-copy-id -i $HOME/.ssh/id_rsa.pub slave-1
+ssh-copy-id -i $HOME/.ssh/id_rsa.pub slave-2
+ssh-copy-id -i $HOME/.ssh/id_rsa.pub slave-3
+
+```
+
+![SSH Keys](./images/ssh-keys.png)
+
+## Format/Run Master Node
+
+```bash
+hdfs namenode -format
+
+hdfs namenode
+```
+
+## Format Slaves Nodes
+
+*Pre-condition:* First execute commands above (keep **Master** running), then:
+
+```bash
+
+hdfs datanode -format
+
+hdfs datanode
+
+```
+
+## Cluster Nodes
+
+![Image](./images/cluster-report.png)
 
 ---
 
