@@ -1,0 +1,88 @@
+version: "3"
+networks:
+  hadoop-cluster:
+    driver: bridge
+    subnet
+services:
+  hdp-master:
+    build: .
+    image: debian:hadoop3
+    entrypoint: sh /start-cluster.sh
+    tty: true
+    networks:
+    - hadoop-cluster 
+    volumes:
+      - /var/log/hadoop:/opt/hadoop/logs
+      - /var/local/hadoop:/root/shared
+    ports:
+    - "8030:8030"
+    - "8032:8032"
+    - "8033:8033"
+    - "8042:8042"
+    - "8047:8047"
+    - "8088:8088"
+    - "8188:8188"
+    - "8788:8788"
+    - "9000:9000"
+    - "9870:9870"
+    - "10033:10033"
+    - "19888:19888"
+    - "50030:50030"
+    - "50060:50060"
+    - "50070:50070"
+    - "50075:50075"
+  slave-1:
+    build: .
+    image: debian:hadoop3
+    entrypoint: sh /start-slave.sh
+    tty: true
+    networks:
+    - hadoop-cluster 
+    volumes:
+      - /var/log/hadoop:/opt/hadoop/logs
+      - /var/local/hadoop:/root/shared
+    ports:
+    - "8030:8030"
+    - "8032:8032"
+    - "8033:8033"
+    - "8042:8042"
+    - "8047:8047"
+    - "8088:8088"
+    - "8188:8188"
+    - "8788:8788"
+    - "9000:9000"
+    - "9870:9870"
+    - "10033:10033"
+    - "19888:19888"
+    - "50030:50030"
+    - "50060:50060"
+    - "50070:50070"
+    - "50075:50075"
+  slave-2:
+    build: .
+    image: debian:hadoop3
+    entrypoint: sh /start-slave.sh
+    tty: true
+    networks:
+    - hadoop-cluster 
+    volumes:
+      - /var/log/hadoop:/opt/hadoop/logs
+      - /var/local/hadoop:/root/shared
+    ports:
+    - "8030:8030"
+    - "8032:8032"
+    - "8033:8033"
+    - "8042:8042"
+    - "8047:8047"
+    - "8088:8088"
+    - "8188:8188"
+    - "8788:8788"
+    - "9000:9000"
+    - "9870:9870"
+    - "10033:10033"
+    - "19888:19888"
+    - "50030:50030"
+    - "50060:50060"
+    - "50070:50070"
+    - "50075:50075"
+  
