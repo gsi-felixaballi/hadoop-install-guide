@@ -33,6 +33,8 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 sudo usermod -aG docker $(whoami)
 
+# Needs to be logged in Docker remote registry
+# $ docker login
 sudo docker run hello-world
 
 ```
@@ -49,6 +51,20 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 docker-compose --version
 
 ```
+
+## Import Docker image
+
+```bash
+
+docker load -i /path/of/tar/file # e.g /home/hadoop/debian-image.tar
+
+docker images # Lists available docker images
+
+```
+
+## List Docker images
+
+![Docker images](./images/docker-images.png)
 
 ## Docker custom network
 
@@ -115,6 +131,7 @@ apt install curl nano less wget ssh rsync telnet
 ## Environment variables setup / entrypoint (*/start-cluster.sh*)
 
 ```bash
+# Files: /start-cluster.sh or /root/.bashrc
 
 export JAVA_HOME=/usr
 export HADOOP_HOME=/opt/hadoop-3.2.0
