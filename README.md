@@ -8,6 +8,13 @@
 
 ## *Docker useful commands*
 
+- ### Docker start a Docker container
+
+```bash
+docker start -i <container-name> # e.g Start a container (already created, see: 'List Docker containers')
+
+```
+
 - ### *Delete a Docker network*
 
 ```bash
@@ -33,6 +40,18 @@ docker images # Lists available docker images
 - ### *List Docker images*
 
 ![Docker images](./images/docker-images.png)
+
+- ### *List Docker containers*
+
+```bash
+
+docker ps # Shows all running containers
+
+docker ps -a # Shows all containers (created: up & down)
+
+```
+
+![Docker containers](./images/docker-containers.png)
 
 ---
 
