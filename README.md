@@ -31,6 +31,8 @@ sudo apt-get update
 
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 
+sudo usermod -aG docker $(whoami)
+
 sudo docker run hello-world
 
 ```
@@ -363,7 +365,7 @@ Add these properties for HDFS *namenode/datanode*:
 
 ```
 
-## Configure passwordless SSH (*Master / Slaves)
+## Configure passwordless SSH (Master / Slaves)
 
 ```bash
 
