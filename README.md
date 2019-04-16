@@ -131,8 +131,12 @@ services:
 
 ```bash
 
-cd /path/to/file/docker-compose.yml
+cd /path/to/composer/file/folder  # e.g /home/hadoop/, contains 'docker-compose.yml'
 docker-compose up
+
+# Or:
+
+docker compose -f "/path/to/composer/file/folder/docker-compose.yml" up
 
 ```
 
