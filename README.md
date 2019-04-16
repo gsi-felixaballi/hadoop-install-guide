@@ -8,9 +8,10 @@
 
 ## *Docker useful commands*
 
-- ### Docker start a Docker container
+- ### Start a Docker container
 
 ```bash
+
 docker start -i <container-name> # e.g Start a container (already created, see: 'List Docker containers')
 
 ```
@@ -18,13 +19,17 @@ docker start -i <container-name> # e.g Start a container (already created, see: 
 - ### *Delete a Docker network*
 
 ```bash
+
 docker network rm <network-name> # e.g docker network rm hadoop-cluster
+
 ```
 
 - ### *Delete a Docker container*
 
 ```bash
+
 docker rm -f <container-name> # e.g docker rm -f hdp-master  ('-f' forces closing a running container)
+
 ```
 
 - ### *Import a Docker image*
@@ -58,6 +63,7 @@ docker ps -a # Shows all containers (created: up & down)
 ## Docker installation
 
 ```bash
+
 sudo apt-get update
 
 sudo apt-get install \
@@ -91,6 +97,7 @@ sudo docker run hello-world
 ## Docker-compose installation
 
 ```bash
+
 sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 sudo chmod +x /usr/local/bin/docker-compose
@@ -104,12 +111,14 @@ docker-compose --version
 ## *[Option 1]* Docker single-node command
 
 ```bash
+
 docker run -it -h hadoop-namenode --name hadoop-namenode --net=host -p 8030:8030 -p 8032:8032 -p 8033:8033 -p 8042:8042 -p 8047:8047 -p 8088:8088 -p 8188:8188 -p 788:8788 -p 9000:9000 -p 9870:9870 -p 10033:10033 -p 19888:19888 -p 50030:50030 -p 50060:50060 -p 50070:50070 -p 50075:50075 -v /var/log/hadoop:/opt/hadoop/logs -v /var/local/hadoop:/root/shared debian:hadoop3
 ```
 
 ## *[Option 2]* Single-Node Cluster (*docker-compose.yml*)
 
 ```yaml
+
 version: "3"
 networks:
   hadoop-cluster:
@@ -162,12 +171,15 @@ docker compose -f "/path/to/composer/file/folder/docker-compose.yml" up
 ### *Installing local tools*
 
 ```bash
+
 apt install curl nano less wget ssh rsync telnet
+
 ```
 
 ## Environment variables setup / entrypoint (*/start-cluster.sh*)
 
 ```bash
+
 # Files: /start-cluster.sh or /root/.bashrc
 
 export JAVA_HOME=/usr
@@ -201,49 +213,58 @@ tail -f /dev/null
 ### *Cluster Network*
 
 ```bash
+
 docker network create --driver=bridge \
 --subnet=192.168.0.0/24 \
 --ip-range=192.168.0.0/24 \
 --gateway=192.168.0.254 \
 hadoop-cluster
+
 ```
 
 ### *Master Node*
 
 ```bash
+
 docker run -it -h master --name hdp-master --cpus=1 \
 --memory="1024MB" --memory-swap="2048MB" \
 --net=hadoop-cluster --ip="192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
 --add-host="slave-2:192.168.0.3" \
 debian:hadoop3
+
 ```
 
 ### *Slave (1) Node*
 
 ```bash
+
 docker run -it -h slave-1 --name hdp-slave-1 --cpus=1 \
 --memory="1024MB" --memory-swap="2048MB" \
 --workdir="/home/hadoop/" --net=hadoop-cluster --ip="192.168.0.2" \
 --add-host="master:192.168.0.1" \
 --add-host="slave-2:192.168.0.3" \
 debian:hadoop3
+
 ```
 
 ### *Slave (2) Node*
 
 ```bash
+
 docker run -it -h slave-2 --name hdp-slave-2 --cpus=1 \
 --memory="1024MB" --memory-swap="2048MB" \
 --workdir="/home/hadoop/" --net=hadoop-cluster --ip="192.168.0.3" \
 --add-host="master:192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
 debian:hadoop3
+
 ```
 
 ### *Slave (3) Node*
 
 ```bash
+
 docker run -it -h slave-3 --name hdp-slave-3 --cpus=1 \
 --memory="1024MB" --memory-swap="2048MB" \
 --workdir="/home/hadoop/" --net=hadoop-cluster --ip="192.168.0.4" \
@@ -251,12 +272,15 @@ docker run -it -h slave-3 --name hdp-slave-3 --cpus=1 \
 --add-host="slave-1:192.168.0.2" \
 --add-host="slave-2:192.168.0.3" \
 debian:hadoop3
+
 ```
 
 ## Access a created Docker container
 
 ```bash
+
 docker exec -it <container-name> bash # e.g docker exec -it hdp-master bash
+
 ```
 
 ---
@@ -473,6 +497,8 @@ hdfs datanode
 ---
 
 ## Docker Documentation
+
+- [Docker: ABC Tutorial for Beginners](https://docker-curriculum.com/)
 
 - [Docker: Installation on Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
