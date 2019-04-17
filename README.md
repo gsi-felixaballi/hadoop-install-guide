@@ -197,7 +197,10 @@ export HDFS_SECONDARYNAMENODE_USER="root"
 export YARN_RESOURCEMANAGER_USER="root"
 export YARN_NODEMANAGER_USER="root"
 
-export PATH=$PATH:$JAVA_HOME:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export HADOOP_CLASSPATH=$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$HADOOP_YARN_HOME/*,$HADOOP_Y$
+
+export PATH=$PATH:$JAVA_HOME:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HADOOP_CLASSPATH
+
 export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
 
 service ssh start && start-all.sh
@@ -373,6 +376,21 @@ export JAVA_HOME=/usr
   <value>256</value>
 </property>
 
+<!-- !!!Important: Map/Reduce Environment -->
+<property>
+  <name>yarn.app.mapreduce.am.env</name>
+  <value>HADOOP_MAPRED_HOME=$HADOOP_MAPRED_HOME</value>
+</property>
+<property>
+  <name>mapreduce.map.env</name>
+  <value>HADOOP_MAPRED_HOME=$HADOOP_MAPRED_HOME</value>
+</property>
+<property>
+  <name>mapreduce.reduce.env</name>
+  <value>HADOOP_MAPRED_HOME=$HADOOP_MAPRED_HOME</value>
+</property>
+
+
 ```
 
 ---
@@ -412,6 +430,15 @@ export JAVA_HOME=/usr
   <name>yarn.nodemanager.vmem-check-enabled</name>
   <value>false</value>
 </property>
+
+<!-- !!!Important: Map/Reduce Classpath -->
+<property>
+  <name>yarn.application.classpath</name>
+  <value> $HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_MAPRED_$
+    $HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*
+  </value>
+</property>
+
 
 ```
 
@@ -495,6 +522,40 @@ hdfs datanode
 ![Image](./images/cluster-report.png)
 
 ---
+
+## Map-Reduce Example
+
+```bash
+# Active user: 'root'
+
+# Creating example data dirs
+hdfs dfs -mkdir -p /user/root/wordcount/input
+
+# Copying local resource to HDFS File System
+hdfs dfs -put /home/hadoop/local-data/worldcities.csv /user/root/wordcount/input
+
+# Input Dir.: /wordcount/input
+# Output Dir.: /wordcount/output
+# M/R Algorithm: 'wordcount'
+# Output File: wordcount/output/part-r-00000
+hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.0.jar wordcount wordcount/input wordcount/output
+
+# Filtering 'wordcount/output' on word: 'Cuba'
+hdfs dfs -cat wordcount/output/part-r-00000 | grep Cuba
+
+```
+
+## *WordCount Job*
+
+![Word Count Job](./images/wordcount-job.png)
+
+## *WordCount Job 'FINISHED'*
+
+![Word Count Finished](./images/wordcount-job-finished.png)
+
+## *'Cuba' word Filter on M/R Output*
+
+![Cuba words Filter](./images/map-reduce-cuba-words-filter.png)
 
 ## Docker Documentation
 
