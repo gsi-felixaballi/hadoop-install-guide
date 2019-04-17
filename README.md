@@ -546,7 +546,7 @@ hdfs datanode
 
 ---
 
-## Map-Reduce Example
+## Map-Reduce Example (*default*)
 
 ```bash
 # Active user: 'root'
@@ -579,6 +579,54 @@ hdfs dfs -cat wordcount/output/part-r-00000 | grep Cuba
 ## *'Cuba' word Filter on M/R Output*
 
 ![Cuba words Filter](./images/map-reduce-cuba-words-filter.png)
+
+## Map-Reduce Example (*Maven Project*)
+
+```bash
+
+# File: pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.fraballi.hadoop</groupId>
+    <artifactId>demo</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+## *Maven Project*
+
+[Download Code](./sources/demo-1.0.zip)
+
+![Java Project](./images/wordcount-java-project.png)
+
+```bash
+
+# !!!Important: Avoid 'output/' HDFS path collisions (change name if already exists)
+# 'demo.WordCount' is the class in Java package (contains 'Driver' Hadoop aware type class)
+
+hadoop jar '/home/hadoop/local-data/demo-1.0.jar' demo.WordCount wordcount/input wordcount/output
+
+```
 
 ## Docker Documentation
 
