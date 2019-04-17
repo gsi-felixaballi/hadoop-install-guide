@@ -1,14 +1,12 @@
 # Hadoop Cluster Installation
 
-> ## Step-by-step guide for Hadoop Single Node/Cluster deployment
-
-## Single-Node Cluster (*Command Line*)
+> ## *Step-By-Step guide for Hadoop Single Node/Cluster Deployment*
 
 ---
 
-## *Docker useful commands*
+## *Docker Useful Commands*
 
-- ### Start a Docker container
+- ### Start a Docker Container
 
 ```bash
 
@@ -16,7 +14,15 @@ docker start -i <container-name> # e.g Start a container (already created, see: 
 
 ```
 
-- ### *Delete a Docker network*
+- ### *Enter a Docker Container*
+
+```bash
+
+docker exec -it <container-name> bash # e.g docker exec -it hdp-master bash
+
+```
+
+- ### *Delete a Docker Network*
 
 ```bash
 
@@ -24,7 +30,7 @@ docker network rm <network-name> # e.g docker network rm hadoop-cluster
 
 ```
 
-- ### *Delete a Docker container*
+- ### *Delete a Docker Container*
 
 ```bash
 
@@ -32,7 +38,15 @@ docker rm -f <container-name> # e.g docker rm -f hdp-master  ('-f' forces closin
 
 ```
 
-- ### *Import a Docker image*
+- ### *Delete a Docker Image*
+
+```bash
+
+docker rm -f <container-name> # e.g docker rm -f hdp-master  ('-f' forces closing a running container)
+
+```
+
+- ### *Import a Docker Image*
 
 ```bash
 
@@ -42,11 +56,11 @@ docker images # Lists available docker images
 
 ```
 
-- ### *List Docker images*
+- ### *List Docker Images*
 
 ![Docker images](./images/docker-images.png)
 
-- ### *List Docker containers*
+- ### *List Docker Containers*
 
 ```bash
 
@@ -60,7 +74,7 @@ docker ps -a # Shows all containers (created: up & down)
 
 ---
 
-## Docker installation
+## Docker Installation
 
 ```bash
 
@@ -94,7 +108,7 @@ sudo docker run hello-world
 
 ```
 
-## Docker-compose installation
+## Docker-compose Installation
 
 ```bash
 
@@ -108,11 +122,11 @@ docker-compose --version
 
 ```
 
-## *[Option 1]* Docker single-node command
+## *[Option 1]* Single-Node Cluster (*Command Line*)
 
 ```bash
 
-docker run -it -h hadoop-namenode --name hadoop-namenode --net=host -p 8030:8030 -p 8032:8032 -p 8033:8033 -p 8042:8042 -p 8047:8047 -p 8088:8088 -p 8188:8188 -p 788:8788 -p 9000:9000 -p 9870:9870 -p 10033:10033 -p 19888:19888 -p 50030:50030 -p 50060:50060 -p 50070:50070 -p 50075:50075 -v /var/log/hadoop:/opt/hadoop/logs -v /var/local/hadoop:/root/shared debian:hadoop3
+docker run -it -h hadoop-namenode --name hadoop-namenode --net=host -p 8030:8030 -p 8032:8032 -p 8033:8033 -p 8042:8042 -p 8047:8047 -p 8088:8088 -p 8188:8188 -p 788:8788 -p 9000:9000 -p 9870:9870 -p 10033:10033 -p 19888:19888 -p 50030:50030 -p 50060:50060 -p 50070:50070 -p 50075:50075 -v /var/log/hadoop:/opt/hadoop/logs -v /var/local/hadoop:/root/shared debian:hadoop-master
 ```
 
 ## *[Option 2]* Single-Node Cluster (*docker-compose.yml*)
@@ -126,7 +140,7 @@ networks:
 services:
   hadoop:
     build: .
-    image: debian:hadoop3
+    image: debian:hadoop-master
     entrypoint: sh /start-cluster.sh
     tty: true
     networks:
@@ -234,7 +248,12 @@ docker run -it -h master --name hdp-master --cpus=1 \
 --net=hadoop-cluster --ip="192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
 --add-host="slave-2:192.168.0.3" \
-debian:hadoop3
+-p 8030:8030 -p 8032:8032 -p 8033:8033 -p 8042:8042 \
+-p 8047:8047 -p 8088:8088 -p 8188:8188 -p 788:8788 \
+-p 9000:9000 -p 9870:9870 -p 10033:10033 -p 19888:19888 \
+-p 50030:50030 -p 50060:50060 -p 50070:50070 -p 50075:50075 \
+-v /var/log/hadoop:/opt/hadoop/logs -v /var/local/hadoop:/root/shared \
+debian:hadoop-master
 
 ```
 
@@ -247,7 +266,7 @@ docker run -it -h slave-1 --name hdp-slave-1 --cpus=1 \
 --workdir="/home/hadoop/" --net=hadoop-cluster --ip="192.168.0.2" \
 --add-host="master:192.168.0.1" \
 --add-host="slave-2:192.168.0.3" \
-debian:hadoop3
+debian:hadoop-slave
 
 ```
 
@@ -260,7 +279,7 @@ docker run -it -h slave-2 --name hdp-slave-2 --cpus=1 \
 --workdir="/home/hadoop/" --net=hadoop-cluster --ip="192.168.0.3" \
 --add-host="master:192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
-debian:hadoop3
+debian:hadoop-slave
 
 ```
 
@@ -274,15 +293,7 @@ docker run -it -h slave-3 --name hdp-slave-3 --cpus=1 \
 --add-host="master:192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
 --add-host="slave-2:192.168.0.3" \
-debian:hadoop3
-
-```
-
-## Access a created Docker container
-
-```bash
-
-docker exec -it <container-name> bash # e.g docker exec -it hdp-master bash
+debian:hadoop-slave
 
 ```
 
@@ -297,15 +308,19 @@ docker exec -it <container-name> bash # e.g docker exec -it hdp-master bash
 > e.g (Master Node)
 
 ```bash
+
 master
+
 ```
 
 > e.g (Slaves Nodes)
 
 ```bash
+
 slave-1
 slave-2
 slave-3
+
 ```
 
 ---
@@ -315,9 +330,11 @@ slave-3
 > e.g (Slaves Nodes)
 
 ```bash
+
 slave-1
 slave-2
 slave-3
+
 ```
 
 ---
@@ -500,9 +517,12 @@ ssh-copy-id -i $HOME/.ssh/id_rsa.pub slave-3
 ## Format/Run Master Node
 
 ```bash
+
+# !!!Important: Always format/start namenode first
 hdfs namenode -format
 
 hdfs namenode
+
 ```
 
 ## Format Slaves Nodes
@@ -510,6 +530,9 @@ hdfs namenode
 *Pre-condition:* First execute commands above (keep **Master** running), then:
 
 ```bash
+
+# Problem: Master CID (Cluster ID) and slave CID mismatch
+# !!! Important: If a datanode is formatted/started before handshaking with a namenode, shall delete directory in slave-node'/home/hadoop/hdfs/datanode' explained in 'File: $HADOOP_CONF_DIR/hdfs-site.xml'
 
 hdfs datanode -format
 
@@ -559,7 +582,11 @@ hdfs dfs -cat wordcount/output/part-r-00000 | grep Cuba
 
 ## Docker Documentation
 
+### *Docker For Beginners*
+
 - [Docker: ABC Tutorial for Beginners](https://docker-curriculum.com/)
+
+### *Docker Setup*
 
 - [Docker: Installation on Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
@@ -571,12 +598,20 @@ hdfs dfs -cat wordcount/output/part-r-00000 | grep Cuba
 
 ## Apache Hadoop Documentation
 
-[Apache Hadoop: Official Documentation](https://hadoop.apache.org/docs/r3.0.2/)
+- [Apache Hadoop: Official Documentation](https://hadoop.apache.org/docs/r3.0.2/)
+
+### *Single Node Setup*
 
 - [Apache Hadoop: Setting up a Single Node Cluster](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html)
 
+- [Apache Hadoop: Install a Single Node Hadoop Cluster](https://www.linode.com/docs/databases/hadoop/how-to-install-and-set-up-hadoop-cluster/)
+
+- [Apache Hadoop: Install Hadoop on Ubuntu 18.04 Bionic Beaver Linux](https://linuxconfig.org/how-to-install-hadoop-on-ubuntu-18-04-bionic-beaver-linux)
+
+### *Cluster Setup*
+
 - [Apache Hadoop: Hadoop Cluster Setup](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/ClusterSetup.html)
 
-- [How to install Hadoop on Ubuntu 18.04 Bionic Beaver Linux](https://linuxconfig.org/how-to-install-hadoop-on-ubuntu-18-04-bionic-beaver-linux)
+### *Map Reduce*
 
-- [Install Hadoop: Setting up a Single Node Hadoop Cluster](https://www.linode.com/docs/databases/hadoop/how-to-install-and-set-up-hadoop-cluster/)
+- [Apache Hadoop: Map Reduce Examples](https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html)
