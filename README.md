@@ -22,6 +22,20 @@ docker exec -it <container-name> bash # e.g docker exec -it hdp-master bash
 
 ```
 
+- ### *Copy a File/Directory From/Into a Docker Container*
+
+```bash
+
+# From Host to Docker:
+docker cp <local-directory>/<folder-to-copy> <docker-name/docker-id>:/<docker-container-folder> # e.g docker cp  /local/folder/to/copy hdp-master:/opt
+
+# From Docker to Host:
+docker cp <docker-name/docker-id>:/<docker-container-folder> <local-directory>/<folder-to-copy> # e.g docker cp hdp-master:/opt /local/target/folder
+
+
+# !!!Important: Please notice only command <parts> flipped
+```
+
 - ### *Delete a Docker Network*
 
 ```bash
@@ -248,6 +262,7 @@ docker run -it -h master --name hdp-master --cpus=1 \
 --net=hadoop-cluster --ip="192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
 --add-host="slave-2:192.168.0.3" \
+--add-host="kafka:192.168.0.101" \
 -p 8030:8030 -p 8032:8032 -p 8033:8033 -p 8042:8042 \
 -p 8047:8047 -p 8088:8088 -p 8188:8188 -p 788:8788 \
 -p 9000:9000 -p 9870:9870 -p 10033:10033 -p 19888:19888 \
