@@ -1,6 +1,8 @@
 # Hadoop Cluster Installation
 
 > ## *Step-By-Step guide for Hadoop Single Node/Cluster Deployment*
+>
+> *Hadoop version: 3.2.0*
 
 ---
 
@@ -207,6 +209,7 @@ apt install curl nano less wget ssh rsync telnet
 ## Environment variables setup / entrypoint (*/start-cluster.sh*)
 
 ```bash
+#!/bin/bash
 
 # Files: /start-cluster.sh or /root/.bashrc
 
