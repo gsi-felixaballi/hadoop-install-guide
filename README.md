@@ -621,7 +621,9 @@ start-all.sh # If well configured slaves, start also dependant nodes (e.g: .idem
 
 ---
 
-## Map-Reduce Example (*default*)
+## Map-Reduce Example - Java (*default*)
+
+*[Download](./sources/python/mr-java.zip)*
 
 ```bash
 # Active user: 'root'
@@ -642,6 +644,39 @@ hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.0.j
 hdfs dfs -cat wordcount/output/part-r-00000 | grep Cuba
 
 ```
+
+## Map-Reduce Example - Python (*default*)
+
+*[Download](./sources/python/mr-python.zip)*
+
+```bash
+# Install in Master/Nodes
+apt install python3
+
+#create a folder to store the mapper and reducer
+mkdir python-task
+
+#move to this folder
+cd python-task
+
+# Check Guides' /sources/python folder
+nano mapper.py  # Mapper Logic
+nano reducer.py # Reducer Logic
+
+# Give execution permission
+chmod +x mapper.py
+chmod +x reducer.py
+
+# Executing Task
+hadoop jar /opt/hadoop-3.2.0/share/hadoop/tools/lib/hadoop-streaming-3.2.0.jar \
+-files mapper.py,reducer.py -mapper mapper.py -reducer reducer.py \
+-input /user/root/wordcount/input/worldcities.csv \
+-output \
+/user/root/wordcount/output-python
+
+```
+
+[To Read: Hadoop Streaming Utility](https://hadoop.apache.org/docs/r3.2.0/hadoop-streaming/HadoopStreaming.html)
 
 ## *WordCount Job*
 
