@@ -580,6 +580,47 @@ hdfs datanode
 
 ---
 
+## Start/Stop Cluster Components
+
+```yml
+
+    Ranger
+    Knox
+    ZooKeeper
+    HDFS
+        Journal Node
+        Name Node
+        Secondary Name Node
+        Data Node
+    YARN
+        Resource Manager
+        History Server
+        Node Manager
+
+# Note: 'Stop Cluster' process is reversable
+
+```
+
+```bash
+
+# This sequence grants no instance keeps running (before starting a new one)
+stop-yarn.sh && stop-dfs.sh \
+start-dfs.sh && start-yarn.sh
+
+# Radical stop
+stop-all.sh # Stops services in dependant nodes (e.g slaves, secondary master)
+start-all.sh # If well configured slaves, start also dependant nodes (e.g: .idem)
+
+```
+
+---
+
+## Hadoop Clustering Scenarios
+
+![Hadoop Clustering Scenarios](./images/hadoop-high-availability-schema.png)
+
+---
+
 ## Map-Reduce Example (*default*)
 
 ```bash
@@ -693,6 +734,10 @@ hadoop jar '/home/hadoop/local-data/demo-1.0.jar' demo.WordCount wordcount/input
 ### *Cluster Setup*
 
 - [Apache Hadoop: Hadoop Cluster Setup](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/ClusterSetup.html)
+
+### Start/Stop Cluster Sequences
+
+- [Apache Hadoop: Large Clusters Sequence](https://hadooptips.wordpress.com/2016/05/14/hadoop-services-starting-sequence/)
 
 ### *Map Reduce*
 
