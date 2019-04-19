@@ -213,7 +213,7 @@ apt install curl nano less wget ssh rsync telnet
 
 # Files: /start-cluster.sh or /root/.bashrc
 
-export JAVA_HOME=/usr
+export JAVA_HOME=/usr  # If Java is portable (e.g jdk1.8.0_201.tar.gz), set value with: /opt/jdk1.x.y_z  e.g /opt/jdk1.8.0_201
 export HADOOP_HOME=/opt/hadoop-3.2.0
 
 export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
@@ -234,6 +234,7 @@ export PATH=$PATH:$JAVA_HOME:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$
 
 export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
 
+# !!!Important: Exclude this section below from file: .bashrc
 service ssh start && start-all.sh
 
 tail -f /dev/null
@@ -367,6 +368,21 @@ sudo apt update; sudo apt install oracle-java8-installer
 javac -version
 
 sudo apt install oracle-java8-set-default
+
+```
+
+### *[**Optional**] Install Java package (**jdk-8u211-linux-x64.tar.gz**)*
+
+#### Go to: [Java Oracle Downloads](https://www.oracle.com/technetwork/java/javaee/downloads/jdk8-downloads-2133151.html)
+
+```bash
+
+docker cp <local-folder>/jdk-8u211-linux-x64.tar.gz <container-name/docker-id>:/opt
+
+docker exec -it <container-name> bash
+
+tar -xzvf /opt/jdk-8u211-linux-x64.tar.gz  # JAVA_HOME: /opt/jdk1.8.0_201
+
 ```
 
 ---
@@ -374,7 +390,7 @@ sudo apt install oracle-java8-set-default
 ## File: **$HADOOP_CONF_DIR/hadoop-env.sh**
 
 ```bash
-export JAVA_HOME=/usr
+export JAVA_HOME=/usr  #e.g Optional: /opt/jdk1.8.0_201
 ```
 
 ---
