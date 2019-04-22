@@ -120,7 +120,7 @@ sudo usermod -aG docker $(whoami)
 
 # Needs to be logged in Docker remote registry
 # $ docker login
-sudo docker run hello-world
+docker run hello-world
 
 ```
 
@@ -266,6 +266,7 @@ docker run -it -h master --name hdp-master --cpus=1 \
 --net=hadoop-cluster --ip="192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
 --add-host="slave-2:192.168.0.3" \
+--add-host="ambari:192.168.0.100" \
 --add-host="kafka:192.168.0.101" \
 -p 8030:8030 -p 8032:8032 -p 8033:8033 -p 8042:8042 \
 -p 8047:8047 -p 8088:8088 -p 8188:8188 -p 788:8788 \
@@ -276,6 +277,36 @@ debian:hadoop-master
 
 ```
 
+### *Install/Start **Ambari Agent** in Cluster Nodes*
+
+```bash
+# !!!Important: In order Ambari Server detects Agents,
+# this service must be installed in Master/Slaves: 'ambari-agent'
+# or any other independant Node component
+
+# Install Ambari Agent (Read these sections):
+# https://github.com/gsi-felixaballi/ambari-install-guide#download-ambari-repositories
+# https://github.com/gsi-felixaballi/ambari-install-guide#install-ambari-agents-manually-on-debian-9
+
+```
+
+```bash
+# Edit '/etc/ambari-agent/conf/ambari-agent.init'
+hostname=ambari  # e.g ambari server FQDN (Full-qualified Domain Name)
+
+```
+
+```bash
+# Start Ambari Agent (Needed for Ambari Server nodes detection)
+ambari-agent start
+
+```
+
+### *Ambari Agent (Master) running*
+
+![Ambari Agent - Master Node](./images/master-node-agent-in-ambari-server.png)
+
+
 ### *Slave (1) Node*
 
 ```bash
@@ -285,6 +316,7 @@ docker run -it -h slave-1 --name hdp-slave-1 --cpus=1 \
 --workdir="/home/hadoop/" --net=hadoop-cluster --ip="192.168.0.2" \
 --add-host="master:192.168.0.1" \
 --add-host="slave-2:192.168.0.3" \
+--add-host="ambari:192.168.0.100" \
 debian:hadoop-slave
 
 ```
@@ -298,6 +330,7 @@ docker run -it -h slave-2 --name hdp-slave-2 --cpus=1 \
 --workdir="/home/hadoop/" --net=hadoop-cluster --ip="192.168.0.3" \
 --add-host="master:192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
+--add-host="ambari:192.168.0.100" \
 debian:hadoop-slave
 
 ```
@@ -312,6 +345,7 @@ docker run -it -h slave-3 --name hdp-slave-3 --cpus=1 \
 --add-host="master:192.168.0.1" \
 --add-host="slave-1:192.168.0.2" \
 --add-host="slave-2:192.168.0.3" \
+--add-host="ambari:192.168.0.100" \
 debian:hadoop-slave
 
 ```
@@ -361,13 +395,14 @@ slave-3
 ## [Install Java JDK 8](http://tipsonubuntu.com/2016/07/31/install-oracle-java-8-9-ubuntu-16-04-linux-mint-18/)
 
 ```bash
-sudo add-apt-repository ppa:webupd8team/java
 
-sudo apt update; sudo apt install oracle-java8-installer
+add-apt-repository ppa:webupd8team/java
+
+apt update; apt install oracle-java8-installer
 
 javac -version
 
-sudo apt install oracle-java8-set-default
+apt install oracle-java8-set-default
 
 ```
 
@@ -532,7 +567,7 @@ Add these properties for HDFS *namenode/datanode*:
 ```bash
 
 # Replicate in all instances
-sudo apt-get install openssh-server openssh-client
+apt-get install openssh-server openssh-client
 
 # Only Master
 ssh-keygen -t rsa
