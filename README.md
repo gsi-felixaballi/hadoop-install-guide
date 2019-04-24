@@ -58,7 +58,7 @@ docker rm -f <container-name> # e.g docker rm -f hdp-master  ('-f' forces closin
 
 ```bash
 
-docker rm -f <container-name> # e.g docker rm -f hdp-master  ('-f' forces closing a running container)
+docker rmi -f <image-name:version> # e.g docker rmi -f debian:hadoop-master  ('-f' forces closing a running container)
 
 ```
 
