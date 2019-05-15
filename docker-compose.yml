@@ -1,17 +1,25 @@
-version: "3"
+# e.g 
+version: "2.4"
 networks:
   hadoop-cluster:
+    name: hadoop-cluster-1
     driver: bridge
+    ipam:
+      driver: default
+      config: 
+          - subnet: 192.168.10.0/24
+          # 'gateway' available only for version '2.*' (remove this line)
+            gateway: 192.168.10.254
 services:
   hadoop:
     build: .
-    image: debian:hadoop3
-    entrypoint: sh /start-cluster.sh
+    container_name: hdp-master-1
+    image: debian:hadoop-master
+    entrypoint: tail -f /dev/null
     tty: true
     networks:
-    - hadoop-cluster 
-    # deploy:
-    #   replicas: 3
+      hadoop-cluster:
+        ipv4_address: 192.168.10.1
     volumes:
       - /var/log/hadoop:/opt/hadoop/logs
       - /var/local/hadoop:/root/shared
@@ -32,3 +40,5 @@ services:
     - "50060:50060"
     - "50070:50070"
     - "50075:50075"
+
+  

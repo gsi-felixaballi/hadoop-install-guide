@@ -149,20 +149,27 @@ docker run -it -h hadoop-namenode --name hadoop-namenode --net=host -p 8030:8030
 
 ```yaml
 
-version: "3"
+version: "2.4"
 networks:
   hadoop-cluster:
+    name: hadoop-cluster-1
     driver: bridge
+    ipam:
+      driver: default
+      config: 
+          - subnet: 192.168.10.0/24
+          # 'gateway' available only for version '2.*' (remove this line)
+            gateway: 192.168.10.254
 services:
   hadoop:
     build: .
+    container_name: hdp-master-1
     image: debian:hadoop-master
-    entrypoint: sh /start-cluster.sh
+    entrypoint: tail -f /dev/null
     tty: true
     networks:
-    - hadoop-cluster 
-    # deploy:
-    #   replicas: 3
+      hadoop-cluster:
+        ipv4_address: 192.168.10.1
     volumes:
       - /var/log/hadoop:/opt/hadoop/logs
       - /var/local/hadoop:/root/shared
@@ -183,6 +190,7 @@ services:
     - "50060:50060"
     - "50070:50070"
     - "50075:50075"
+
 ```
 
 ## Running **docker-compose** for *docker-compose.yml*
@@ -786,6 +794,8 @@ hadoop jar '/home/hadoop/local-data/demo-1.0.jar' demo.WordCount wordcount/input
 - [Docker: Compose - Installation](https://docs.docker.com/compose/install/)
 
 - [Docker: Compose - Getting Started](https://docs.docker.com/compose/gettingstarted/)
+
+- [Docker: Compose - Setup a network for docker containers](https://blog.alejandrocelaya.com/2017/04/21/set-specific-ip-addresses-to-docker-containers-created-with-docker-compose/)
 
 - [Docker: Specify custom networks](https://docs.docker.com/compose/networking/#specify-custom-networks)
 

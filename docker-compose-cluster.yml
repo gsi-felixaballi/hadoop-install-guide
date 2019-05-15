@@ -1,16 +1,24 @@
-version: "3"
+# e.g
+version: "2.4"
 networks:
   hadoop-cluster:
+    name: hadoop-cluster-1
     driver: bridge
-    subnet
+    ipam:
+      driver: default
+      config: 
+          - subnet: 192.168.10.0/24
+          # 'gateway' available only for version '2.*' (remove this line)
+            gateway: 192.168.10.254
 services:
-  hdp-master:
+  master:
     build: .
-    image: debian:hadoop3
-    entrypoint: sh /start-cluster.sh
+    container_name: hdp-master-1
+    image: debian:hadoop-master
     tty: true
     networks:
-    - hadoop-cluster 
+      hadoop-cluster:
+        ipv4_address: 192.168.10.1
     volumes:
       - /var/log/hadoop:/opt/hadoop/logs
       - /var/local/hadoop:/root/shared
@@ -33,11 +41,12 @@ services:
     - "50075:50075"
   slave-1:
     build: .
-    image: debian:hadoop3
-    entrypoint: sh /start-slave.sh
+    container_name: slave-1
+    image: debian:hadoop-slave
     tty: true
     networks:
-    - hadoop-cluster 
+      hadoop-cluster:
+        ipv4_address: 192.168.10.2
     volumes:
       - /var/log/hadoop:/opt/hadoop/logs
       - /var/local/hadoop:/root/shared
@@ -60,11 +69,12 @@ services:
     - "50075:50075"
   slave-2:
     build: .
-    image: debian:hadoop3
-    entrypoint: sh /start-slave.sh
+    container_name: slave-2
+    image: debian:hadoop-slave
     tty: true
     networks:
-    - hadoop-cluster 
+      hadoop-cluster:
+        ipv4_address: 192.168.10.3
     volumes:
       - /var/log/hadoop:/opt/hadoop/logs
       - /var/local/hadoop:/root/shared
@@ -84,5 +94,4 @@ services:
     - "50030:50030"
     - "50060:50060"
     - "50070:50070"
-    - "50075:50075"
-  
+    - "50075:50075" 
